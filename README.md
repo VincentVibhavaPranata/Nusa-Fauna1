@@ -121,6 +121,15 @@ Buka `Front end/index.html` di browser. Saat dibuka dari `localhost`, website ot
 - **Backend:** Render Web Service, Root Directory `Backend`, Start Command `uvicorn main:app --host 0.0.0.0 --port $PORT`
 - **Frontend:** Vercel, Root Directory `Front end`, Framework Preset `Other`
 
-## Author
+## Tim dan Kontribusi
 
-Vincent Vibhava Pranata
+Project ini dikerjakan bertiga:
+
+| Anggota | Peran |
+|---|---|
+| Vincent Vibhava Pranata | Backend: API FastAPI (`/predict`), integrasi model ke API, deployment di Render dan Vercel, sambungan frontend ke backend |
+| [CALVIN ALEXANDER SUCIPTO] | Model AI: dataset, training, dan evaluasi model YOLO |
+| [
+CARLOS ACHANTA ZAKKY] | Frontend: tampilan website (`index.html`) |
+
+Repo ini berisi bagian backend, frontend, dan hasil evaluasi model dari seluruh tim.
