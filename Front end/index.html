@@ -801,6 +801,11 @@
     </footer>
 
     <script>
+        // Alamat backend: otomatis pilih localhost kalau dibuka di laptop, Render kalau di internet
+        const API_URL = location.hostname === "localhost"
+            ? "http://localhost:8000"
+            : "https://nusa-fauna1-1.onrender.com";
+
         document.addEventListener('DOMContentLoaded', function() {
             const fileInput = document.getElementById("imgInput");
             const previewContainer = document.getElementById("previewContainer");
@@ -951,7 +956,7 @@
             resultBox.style.display = "block";
             resultBox.style.background = "#fff8e1";
             resultBox.style.borderLeft = "5px solid #ffc107";
-            resultList.innerHTML = '<div style="padding:12px;">Memproses gambar...</div>';
+            resultList.innerHTML = '<div style="padding:12px;">Memproses gambar... (kalau pertama kali, server butuh ±1 menit untuk bangun)</div>';
             
             detectButton.disabled = true;
             detectButton.innerHTML = "Memproses...";
@@ -963,7 +968,7 @@
                 // small delay for UX
                 await new Promise(r => setTimeout(r, 700));
 
-                const res = await fetch("http://localhost:8000/predict", {
+                const res = await fetch(`${API_URL}/predict`, {
                     method: "POST",
                     body: formData
                 });
@@ -977,14 +982,7 @@
                 console.error("Error:", err);
                 resultBox.style.background = "#ffebee";
                 resultBox.style.borderLeft = "5px solid #f44336";
-
-                // fallback simulation if server unreachable
-                if (err.message.includes("Failed to fetch") || err.message.includes("localhost") || err.message.includes("HTTP")) {
-                    resultList.innerHTML = '';
-                    simulateDemo();
-                } else {
-                    resultList.innerHTML = '<div class="card">Terjadi kesalahan: ' + escapeHtml(err.message) + '</div>';
-                }
+                resultList.innerHTML = '<div class="card">Gagal terhubung ke server. Kalau baru pertama dibuka, tunggu ±1 menit lalu coba lagi. (' + escapeHtml(err.message) + ')</div>';
             } finally {
                 detectButton.disabled = false;
                 detectButton.innerHTML = "Deteksi Sekarang";
@@ -1045,7 +1043,8 @@
                 const sw = (x2 - x1) * scaleX;
                 const sh = (y2 - y1) * scaleY;
 
-                const isProtected = (boxData.status && boxData.status.toLowerCase().includes('dilindungi'));
+                // backend kirim "Langka" atau "Tidak langka"
+                const isProtected = (boxData.status || '').toLowerCase() === 'langka';
                 const color = isProtected ? '#d63031' : '#0984e3';
 
                 // draw box
@@ -1099,7 +1098,7 @@
             resultBox.style.borderLeft = "5px solid var(--green-main)";
         }
 
-        /* fallback demo if server unreachable */
+        /* fallback demo (sekarang tidak dipanggil lagi, boleh dihapus) */
         function simulateDemo() {
             const resultList = document.getElementById("resultList");
             const resultBox = document.getElementById("resultBox");
